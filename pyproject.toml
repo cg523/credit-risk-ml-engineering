@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "credit-risk-ml"
+version = "0.1.0"
+description = "Credit risk ML engineering project"
+authors = [{ name="Cristian Guachamin" }]
+readme = "README.md"
+requires-python = ">=3.9"
+
+dependencies = [
+    "pandas",
+    "scikit-learn",
+    "numpy"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
