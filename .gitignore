@@ -208,6 +208,7 @@ __marimo__/
 
 # Models
 models/
+*.joblib
 
 # Data
 data/

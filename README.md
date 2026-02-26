@@ -1,3 +1,4 @@
+```md
 # Credit Risk ML Engineering System
 
 This repository implements a production-oriented Machine Learning system for credit risk prediction.  
@@ -12,7 +13,7 @@ This project covers the full lifecycle of an ML system:
 - Data loading and preprocessing pipelines
 - Model training and artifact persistence
 - Inference API using FastAPI
-- Containerized deployment (Docker planned)
+- Containerized deployment using Docker
 - Software engineering best practices (src layout, packaging, Git workflows)
 
 This repository is designed as a portfolio project to transition from Data Scientist to Machine Learning Engineer.
@@ -24,76 +25,133 @@ This repository is designed as a portfolio project to transition from Data Scien
 High-level system design:
 
 1. Training pipeline produces a serialized model artifact
-2. Model artifact is loaded into a FastAPI inference service
-3. The service exposes HTTP endpoints for real-time predictions
-4. The service is containerized for reproducible deployment (Docker)
+2. Model artifact is stored outside the Docker image
+3. Model artifact is loaded into a FastAPI inference service at runtime
+4. The service exposes HTTP endpoints for real-time predictions
+5. The service is containerized for reproducible deployment
+
+**Key ML Engineering Principle:** Code, dependencies, and model artifacts are decoupled.
 
 ---
 
 ## Project Structure
 
+```
+
 credit-risk-ml-engineering/
 
-    src/
-        credit_risk_ml/
-            data.py        # data loading
-            features.py    # preprocessing pipeline
-            model.py        # model definition
-            train.py         # training entrypoint
-            api.py           # inference API
+```
+src/
+    credit_risk_ml/
+        data.py        # data loading
+        features.py    # preprocessing pipeline
+        model.py        # model definition
+        train.py         # training entrypoint
+        api.py           # inference API
 
-    data/                   # ignored (raw datasets)
-    models/                 # ignored (trained artifacts)
-    notebooks/
-    tests/
+data/                   # ignored (raw datasets)
+models/                 # ignored (trained artifacts)
+notebooks/
+tests/
 
-    pyproject.toml
-    requirements.txt
-    .gitignore
-    README.md
+pyproject.toml
+requirements.txt
+Dockerfile
+.gitignore
+README.md
+```
+
+````
 
 ---
 
-## Setup
+## Setup (Local Development)
 
 Create environment:
 
-    python -m venv .venv
-    .venv\Scripts\activate   (Windows)
+```bash
+python -m venv .venv
+.venv\\Scripts\\activate   # Windows
+````
 
 Install package:
 
-    pip install -e .
+```bash
+pip install -e .
+```
 
 ---
 
 ## Train Model
 
-    python -m credit_risk_ml.train
+```bash
+python -m credit_risk_ml.train
+```
 
 Model artifact is stored at:
 
-    models/credit_risk_model.joblib
+```bash
+models/credit_risk_model.joblib
+```
 
 ---
 
-## Run Inference API
+## Run Inference API (Local)
 
-    uvicorn credit_risk_ml.api:app --reload
+```bash
+uvicorn credit_risk_ml.api:app --reload
+```
 
 Swagger documentation:
 
-    http://127.0.0.1:8000/docs
+```
+http://127.0.0.1:8000/docs
+```
+
+---
+
+## Docker (Reproducible Inference Service)
+
+### Build Docker Image
+
+```bash
+docker build -t credit-risk-api .
+```
+
+### Run Container with External Model Artifact
+
+**Linux / macOS:**
+
+```bash
+docker run -p 8000:8000 \
+  -v $(pwd)/models:/app/models \
+  -e MODEL_PATH=/app/models/credit_risk_model.joblib \
+  credit-risk-api
+```
+
+**Windows PowerShell:**
+
+```powershell
+docker run -p 8000:8000 `
+  -v ${PWD}/models:/app/models `
+  -e MODEL_PATH=/app/models/credit_risk_model.joblib `
+  credit-risk-api
+```
+
+### Key Concept
+
+The Docker image does **not** contain the model.
+The model is mounted at runtime as an external artifact, enabling model updates without rebuilding the image.
 
 ---
 
 ## API Endpoints
 
-GET /
+### GET /
 
 Returns service health status.
 
-POST /predict
+### POST /predict
 
 Accepts a JSON payload with feature values and returns a credit default prediction.
 
@@ -101,12 +159,14 @@ Accepts a JSON payload with feature values and returns a credit default predicti
 
 ## ML Engineering Concepts Demonstrated
 
-- Modular Python package with src layout
-- Reproducible environments using pyproject.toml
-- Separation of training and inference code
-- Model artifact management outside version control
-- REST API for real-time inference
-- Software engineering workflow using Git and virtual environments
+* Modular Python package with src layout
+* Reproducible environments using pyproject.toml
+* Separation of training and inference code
+* Model artifact management outside version control
+* Runtime model loading via Docker volumes
+* REST API for real-time inference
+* Containerized reproducible deployments
+* Software engineering workflow using Git and virtual environments
 
 ---
 
@@ -114,12 +174,11 @@ Accepts a JSON payload with feature values and returns a credit default predicti
 
 Planned extensions:
 
-- Docker containerization for deployment portability
-- MLflow for experiment tracking and model registry
-- CI/CD pipeline with GitHub Actions
-- Batch inference pipeline with orchestration (Airflow/Prefect)
-- Cloud deployment (AWS/GCP/Azure)
-- Model monitoring and retraining pipeline
+* MLflow for experiment tracking and model registry
+* CI/CD pipeline with GitHub Actions
+* Batch inference pipeline with orchestration (Airflow/Prefect)
+* Cloud deployment (AWS/GCP/Azure)
+* Model monitoring and retraining pipeline
 
 ---
 
@@ -127,3 +186,6 @@ Planned extensions:
 
 Cristian Guachamin
 Machine Learning Engineer in training
+
+```
+```
