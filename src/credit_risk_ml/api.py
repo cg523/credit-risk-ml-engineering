@@ -1,15 +1,21 @@
 from fastapi import FastAPI
-from joblib import load
+import mlflow.sklearn
 import pandas as pd
-from pathlib import Path
 import os
 
-# Project root directory
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-MODEL_PATH = Path(os.getenv("MODEL_PATH", PROJECT_ROOT / "models" / "credit_risk_model.joblib"))
+# ---- Required environment variable ----
+RUN_ID = os.getenv("MODEL_RUN_ID")
 
-# Load model at startup
-model = load(MODEL_PATH)
+if not RUN_ID:
+    raise ValueError(
+        "MODEL_RUN_ID environment variable not set. "
+        "Set it to a valid MLflow run ID."
+    )
+
+MODEL_URI = f"runs:/{RUN_ID}/model"
+
+# Load model from MLflow
+model = mlflow.sklearn.load_model(MODEL_URI)
 
 app = FastAPI(title="Credit Risk Model API")
 
