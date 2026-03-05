@@ -1,21 +1,21 @@
 from fastapi import FastAPI
-import mlflow.sklearn
+import mlflow.pyfunc
 import pandas as pd
 import os
 
-# ---- Required environment variable ----
-RUN_ID = os.getenv("MODEL_RUN_ID")
+# Optional: allow override of tracking URI
+MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI")
+if MLFLOW_TRACKING_URI:
+    mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
 
-if not RUN_ID:
-    raise ValueError(
-        "MODEL_RUN_ID environment variable not set. "
-        "Set it to a valid MLflow run ID."
-    )
+# ---- Model URI using Registry alias ----
+MODEL_URI = "models:/credit_risk_model@champion"
 
-MODEL_URI = f"runs:/{RUN_ID}/model"
+# Load model once at startup
+model = mlflow.pyfunc.load_model(MODEL_URI)
 
-# Load model from MLflow
-model = mlflow.sklearn.load_model(MODEL_URI)
+
+print(f"Serving model version: {model_version.version}")
 
 app = FastAPI(title="Credit Risk Model API")
 

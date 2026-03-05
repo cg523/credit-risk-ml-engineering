@@ -42,6 +42,12 @@ def main():
 
         # Log model
         mlflow.sklearn.log_model(model, "model")
+        run_id = mlflow.active_run().info.run_id
+
+        mlflow.register_model(
+            model_uri=f"runs:/{run_id}/model",
+            name="credit_risk_model"
+        )
 
         # Create models folder
         MODELS_PATH.mkdir(exist_ok=True)
