@@ -6,6 +6,7 @@ from mlflow.exceptions import MlflowException
 MODEL_NAME = "credit_risk_model"
 METRIC = "accuracy"
 
+client = MlflowClient()
 
 def main():
 
@@ -18,8 +19,6 @@ def main():
     except MlflowException:
         print("No champion model found. Skipping validation.")
         return
-
-    client = MlflowClient()
 
     # Get champion
     champion = client.get_model_version_by_alias(
