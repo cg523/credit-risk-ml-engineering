@@ -1,11 +1,23 @@
 import sys
 from mlflow.tracking import MlflowClient
+from mlflow.exceptions import MlflowException
+
 
 MODEL_NAME = "credit_risk_model"
 METRIC = "accuracy"
 
 
 def main():
+
+    try:
+        champion = client.get_model_version_by_alias(
+            name=MODEL_NAME,
+            alias="champion"
+        )
+
+    except MlflowException:
+        print("No champion model found. Skipping validation.")
+        return
 
     client = MlflowClient()
 
