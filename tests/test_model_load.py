@@ -1,13 +1,8 @@
-import os
-import joblib
-import mlflow.pyfunc
+from credit_risk_ml.serving.model_loader import load_model
 
 
 def test_model_load():
 
-    if os.getenv("CI"):
-        model = joblib.load("models/credit_risk_model.joblib")
-    else:
-        model = mlflow.pyfunc.load_model("models:/credit_risk_model@champion")
+    model = load_model()
 
     assert model is not None

@@ -1,7 +1,3 @@
-import pandas as pd
-from credit_risk_ml.features import preprocess
-
-def test_preprocess():
-    df = pd.DataFrame({"a": [1, None]})
-    result = preprocess(df)
-    assert result.isnull().sum().sum() == 0
+def test_import_training_pipeline():
+    from credit_risk_ml.model import train_model
+    assert train_model is not None

@@ -1,11 +1,27 @@
 from mlflow.tracking import MlflowClient
 
-client = MlflowClient()
+MODEL_NAME = "credit_risk_model"
 
-client.set_registered_model_alias(
-    name="credit_risk_model",
-    alias="champion",
-    version="4"
-)
 
-print("Alias 'champion' assigned to version 4")
+def main():
+
+    client = MlflowClient()
+
+    versions = client.search_model_versions(f"name='{MODEL_NAME}'")
+
+    latest_version = max(
+        versions,
+        key=lambda v: int(v.version)
+    )
+
+    client.set_registered_model_alias(
+        name=MODEL_NAME,
+        alias="champion",
+        version=latest_version.version
+    )
+
+    print(f"Champion alias set to version {latest_version.version}")
+
+
+if __name__ == "__main__":
+    main()

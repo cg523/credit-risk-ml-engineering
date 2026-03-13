@@ -6,18 +6,17 @@ from credit_risk_ml.data import load_data
 from credit_risk_ml.features import preprocess
 from credit_risk_ml.model import train_model
 
-from joblib import dump
 from pathlib import Path
+import shutil
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DATA_PATH = PROJECT_ROOT / "data" / "raw" / "credit_default_data.csv"
 MODELS_PATH = PROJECT_ROOT / "models"
-MODEL_PATH = MODELS_PATH / "credit_risk_model.joblib"
 
 def main():
     print("Starting trainig pipeline")
 
-    mlflow.set_experiment("credit-risk-trainig")
+    mlflow.set_experiment("credit-risk-training")
 
     with mlflow.start_run():
 
@@ -52,10 +51,19 @@ def main():
         # Create models folder
         MODELS_PATH.mkdir(exist_ok=True)
 
-        # Save model locally
-        dump(model, MODEL_PATH)
+        baseline_path = MODELS_PATH / "baseline_model"
 
-        print(f"Model saved to {MODEL_PATH}")
+        # Remove existing model if exists
+        if baseline_path.exists():
+            shutil.rmtree(baseline_path)
+
+        # Save model locally
+        mlflow.sklearn.save_model(
+            sk_model=model,
+            path=MODELS_PATH / "baseline_model"
+        )
+
+        print(f"Model saved to {baseline_path}")
         print(f"Accuracy logged: {accuracy}")
 
 
