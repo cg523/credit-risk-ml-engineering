@@ -16,7 +16,8 @@ dependencies = [
     "numpy",
     "joblib",
     "fastapi",
-    "uvicorn"
+    "uvicorn",
+    "mlflow"
 ]
 
 [tool.setuptools.packages.find]
