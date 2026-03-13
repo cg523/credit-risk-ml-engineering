@@ -39,6 +39,18 @@ def main():
         accuracy = accuracy_score(y, predictions)
         mlflow.log_metric("accuracy", accuracy)
 
+        # Log dataset
+        mlflow.log_artifact(DATA_PATH)
+
+        # Log feature names
+        feature_names = list(X.columns)
+
+        with open("features.txt", "w") as f:
+            for feature in feature_names:
+                f.write(f"{feature}\n")
+
+        mlflow.log_artifact("features.txt")
+
         # Log model
         mlflow.sklearn.log_model(model, "model")
         run_id = mlflow.active_run().info.run_id
